@@ -1,0 +1,57 @@
+Sub ARemoveRows()
+    'KeepVBAfromUpdatingScreen
+    With Application
+        .ScreenUpdating = False
+        .WindowState = xlMaximized
+    End With
+    
+    'RemoveBorders
+    Cells.Select
+    With Selection
+        .Borders(xlDiagonalDown).LineStyle = xlNone
+        .Borders(xlDiagonalUp).LineStyle = xlNone
+        .Borders(xlEdgeLeft).LineStyle = xlNone
+        .Borders(xlEdgeTop).LineStyle = xlNone
+        .Borders(xlEdgeBottom).LineStyle = xlNone
+        .Borders(xlEdgeRight).LineStyle = xlNone
+        .Borders(xlInsideVertical).LineStyle = xlNone
+        .Borders(xlInsideHorizontal).LineStyle = xlNone
+    End With
+    
+    'RemoveColumnsE:K
+    'RemoveRowsWithWhiteSpaces
+    'RemoveAllExceptAbove"CVDThickness
+    Dim lCol As Long
+    Dim lRow As Long
+    
+    'HideUnneededRowsandGettheLengthoftheRowsandColumns
+    ActiveSheet.Columns("E:K").Hidden = True
+    lRow = ActiveSheet.UsedRange.Rows.Count
+    lCol = ActiveSheet.UsedRange.Columns.Count
+    
+    'IfNameis"CVDThickness"ThenAddtoCounter
+    'IfEmptyAddtoCounter#2
+    'RemoveAllfromEmptyto"CVDThickness"+1
+    For c1 = lRow To 1 Step -1
+        str1 = ActiveSheet.Cells(c1, "D").Value
+        str2 = ActiveSheet.Cells(c1, "A").Value
+
+    'IfStrMatchesCVDThickness,ChangeColor
+        If Cells(c1, "D").Interior.ColorIndex <> -4142 Or str1 = "CVD Thickness" Or ActiveSheet.Cells(c1, "E").Interior.ColorIndex <> -4142 Then
+            ActiveSheet.Cells(c1, "C").Interior.ColorIndex = 4
+        End If
+        'DeleteSiO2Data
+        If Cells(c1, "C").Interior.ColorIndex = -4142 Or str1 = "SiO2 CVD" Then
+            Rows(c1).Delete
+        End If
+        'RemoveIncomingRows
+        If Cells(c1, "A") = "Incoming" Then
+            Rows(c1).Delete
+        End If
+        'RemoveOtherColoredRows
+        If Cells(c1, "A").Interior.ColorIndex = 1 Then
+            Rows(c1).Delete
+        End If
+    Next
+End Sub
+

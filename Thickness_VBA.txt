@@ -1,0 +1,129 @@
+'Creator: Stacie Herda
+'Date: 9/21/2019
+'About: Code Will Be Used to Convert Thicknesses into Production Code Depending on Customer Values in Excel Sheet
+'       Designed to Be Used With Code in Module4
+
+Sub ThicknessMain()
+    'KeepScreenfromUpdating
+    With Application
+        .ScreenUpdating = False
+        .WindowState = xlMaximized
+    End With
+            
+    'AddSpaceAboveCodes(6Charin"D")
+    'Remove"CVD Thickness"
+    Dim lRow As Long
+    lRow = ActiveSheet.UsedRange.Rows.Count
+    
+    'UnmergeSelection
+    ActiveSheet.Select
+    Selection.UnMerge
+    
+    'DeleteUnnecessaryRows
+    For c1 = lRow To 2 Step -1
+        num1 = ActiveSheet.Cells(c1, "D").Value
+        If num1 = "CVD Thickness" Then
+            ActiveSheet.Cells(c1, "D").EntireRow.Delete
+        End If
+    Next
+    
+    'LooptoChangeNumbersIntoCodes
+    For c2 = 1 To lRow Step 1
+        ActiveSheet.Cells(c2, "D").Activate
+        num1 = ActiveSheet.Cells(c2, "D").Value
+        
+        'SetCaseforifStringis6Characters
+        If Len(num1) = 6 Then
+            ActiveCell.EntireRow.Interior.ColorIndex = 15
+            If InStr(num1, "PB0") Then
+                Cas = 1
+            ElseIf InStr(num1, "DHZ") Then
+                Cas = 2
+            Else
+                Cas = 3
+            End If
+        End If
+        
+        'IfFollowingStringisNumeric,ThenGiveAssociatedLetterforCode
+        If IsNumeric(num1) = "TRUE" Then
+            If Cas = 1 Then
+                Call Naming2("C", "T", num1)
+            ElseIf Cas = 2 Then
+                Call Naming3("N", "0", num1)
+            Else
+                Call Naming("G", num1)
+            End If
+        'IfNot,LeaveStringtheSameinCell
+        Else
+            ActiveCell.Offset(0, 12).Value = num1
+        End If
+    Next
+End Sub
+
+'FunctionforAddingFullCodewithThicknessInCaseofG
+Sub Naming(letter, num1)
+    'DivideBy100toGetNewValueforThickness
+    dec1 = num1 / 100
+    
+    'If#Was100AddTwoZeroes
+    If Len(dec1) = 1 Then
+        str3 = "PZO" + letter + "00" + CStr(dec1)
+            If str3 = "PZOF000" Then
+                str3 = ""
+            End If
+            
+    'If#WasGreaterthan200AddAssignedLetterFirstNumber/100
+    ElseIf Len(dec1) > 2 Then
+        str3 = "PZO" + letter + CStr(dec1)
+    Else
+    
+    'ForOtherValues,AddCode,Letter,0,ThenRestofNumber
+        str3 = "PZO" + letter + "0" + CStr(dec1)
+    End If
+End Sub
+
+FunctionforAddingFullCodewithThicknessInCaseofC
+Sub Naming2(L1, L2, num2)
+    'DivideBy100toGetNewValueforThickness
+    dec1 = num2 / 100
+    
+    'If#Was100AddCode,Letter,Zero,NewValue,Letter
+    If Len(dec1) = 1 Then
+        str3 = "PZO" + L1 + "0" + CStr(dec1) + L2
+            'SpecialCaseifReturnsZero,ThenNullCell
+            If str3 = "PZO" + L1 + "00" + L2 Then
+                str3 = ""
+            End If
+    
+    'ForOtherValues,AddCode,Letter,ThenRestofNumber
+    ElseIf Len(dec1) > 2 Then
+        str3 = "PZO" + L1 + CStr(dec1)
+    Else
+    
+    'ForOtherValues,AddCode,Letter,ThenRestofNumber,ThenSecondLetter
+        str3 = "PZO" + L1 + CStr(dec1) + L2
+    End If
+End Sub
+
+FunctionforAddingFullCodewithThicknessInCaseofN
+Sub Naming3(L1, L2, num3)
+    'DivideBy100toGetNewValueforThickness
+    dec1 = num3 / 100
+    
+    'If#Was100AddCode,Letter,Zeroes,NewValue
+    If Len(dec1) = 1 Then
+        str3 = "PZO" + L1 + "0" + L2 + CStr(dec1)
+            'IfSpecialCaseAgain,NulltoZero
+            If str3 = "PZO" + L1 + "00" + L2 Then
+                str3 = ""
+            End If
+    
+    'IfGreaterthan200,AddCode,Letter,ThenRestofNumber
+    ElseIf Len(dec1) > 2 Then
+        str3 = "PZO" + L1 + CStr(dec1)
+    
+    'ForOtherValues,AddCode,Letter1,Letter2,ThenRestofNumber
+    Else
+        str3 = "PZO" + L1 + L2 + CStr(dec1)
+    End If
+End Sub
