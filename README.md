@@ -1,6 +1,6 @@
-# Visual-Basic-for-Applications-VBA-Example-Code
+# Visual-Basic-for-Applications-VBA-Code
 
-This folder contains example code used for projects that I have worked on and were built using Visual Basic for Applications (VBA). Some scripts might need others that are not present due to discretionary reasons. Some are saved as text files that can be put into macros. 
+This folder contains example code I wrote using Visual Basic for Applications (VBA). Some scripts might need others that are not present due to discretionary reasons. Some are saved as text files that can be put into macros. 
  
 ## Installation
  
